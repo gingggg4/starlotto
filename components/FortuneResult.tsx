@@ -142,16 +142,28 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
         </p>
 
         {/* 당첨번호 확인 버튼 */}
-        <button
-          onClick={fetchLottoResult}
-          disabled={lottoLoading}
-          className="w-full py-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all"
-        >
-          {lottoLoading ? '불러오는 중...' : '🏆 최신 당첨번호 확인하기'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={fetchLottoResult}
+            disabled={lottoLoading}
+            className="flex-1 py-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all"
+          >
+            {lottoLoading ? '불러오는 중...' : '🏆 당첨번호 확인'}
+          </button>
+          <a
+            href="https://www.dhlottery.co.kr/gameResult.do?method=byBall"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 py-2.5 rounded-xl bg-yellow-500/20 border border-yellow-400/30 text-yellow-200 text-xs font-semibold hover:bg-yellow-500/30 transition-all text-center"
+          >
+            🔗 공식 사이트
+          </a>
+        </div>
 
         {lottoError && (
-          <p className="text-center text-red-400/70 text-xs">{lottoError}</p>
+          <p className="text-center text-purple-400/50 text-xs">
+            서버에서 불러오기 실패 — 공식 사이트에서 확인하세요
+          </p>
         )}
       </div>
 
