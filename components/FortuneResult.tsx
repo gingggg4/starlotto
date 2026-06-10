@@ -34,10 +34,9 @@ function LottoBall({ number, size = 'md', highlight = false }: { number: number;
   );
 }
 
-export default function FortuneResult({ result, isFallback, onReset }: FortuneResultProps) {
+export default function FortuneResult({ result, onReset }: FortuneResultProps) {
   const [lottoWin, setLottoWin] = useState<LottoWinData | null>(null);
   const [lottoLoading, setLottoLoading] = useState(false);
-  const [lottoError, setLottoError] = useState('');
   const [lottoOpen, setLottoOpen] = useState(false);
 
   const today = new Date().toLocaleDateString('ko-KR', {
@@ -47,18 +46,15 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
   const fetchLottoResult = async () => {
     if (lottoWin) { setLottoOpen(true); return; }
     setLottoLoading(true);
-    setLottoError('');
     try {
       const res = await fetch('/api/lotto');
       const json = await res.json();
       if (json.success) {
         setLottoWin(json.data);
         setLottoOpen(true);
-      } else {
-        setLottoError(json.error || '불러오기 실패');
       }
     } catch {
-      setLottoError('네트워크 오류가 발생했습니다.');
+      // 실패 시 조용히 처리
     } finally {
       setLottoLoading(false);
     }
@@ -66,11 +62,6 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
 
   return (
     <div className="w-full max-w-sm mx-auto space-y-4 animate-fade-in">
-      {isFallback && (
-        <div className="text-center text-xs text-yellow-300/70 py-1 px-3 rounded-xl bg-yellow-400/10">
-          ⚠️ API 미연결 — 생년월일·별자리 기반 운세를 표시합니다
-        </div>
-      )}
 
       {/* 날짜 & 별자리 */}
       <div className="text-center space-y-1">
@@ -141,12 +132,12 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
           * 이 번호는 재미용입니다. 당첨을 보장하지 않습니다.
         </p>
 
-        {/* 당첨번호 확인 버튼 */}
-        <div className="flex gap-2">
+        {/* 당첨번호 버튼 2개 */}
+        <div className="flex gap-2 pt-1">
           <button
             onClick={fetchLottoResult}
             disabled={lottoLoading}
-            className="flex-1 py-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all"
+            className="flex-1 py-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all disabled:opacity-50"
           >
             {lottoLoading ? '불러오는 중...' : '🏆 당첨번호 확인'}
           </button>
@@ -154,17 +145,11 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
             href="https://www.dhlottery.co.kr/gameResult.do?method=byBall"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 py-2.5 rounded-xl bg-yellow-500/20 border border-yellow-400/30 text-yellow-200 text-xs font-semibold hover:bg-yellow-500/30 transition-all text-center"
+            className="flex-1 py-2.5 rounded-xl bg-yellow-500/20 border border-yellow-400/30 text-yellow-200 text-xs font-semibold hover:bg-yellow-500/30 transition-all text-center block"
           >
             🔗 공식 사이트
           </a>
         </div>
-
-        {lottoError && (
-          <p className="text-center text-purple-400/50 text-xs">
-            서버에서 불러오기 실패 — 공식 사이트에서 확인하세요
-          </p>
-        )}
       </div>
 
       {/* 최신 당첨번호 표시 */}
@@ -186,10 +171,9 @@ export default function FortuneResult({ result, isFallback, onReset }: FortuneRe
           <p className="text-center text-yellow-300/70 text-xs">
             1등 {lottoWin.firstPrzwnerCo}명 · {(lottoWin.firstWinamnt / 100000000).toFixed(1)}억원
           </p>
-          {/* 내 번호와 비교 */}
           {result.lottoNumbers.some(row => row.some(n => lottoWin.numbers.includes(n))) && (
             <p className="text-center text-green-400 text-xs font-semibold">
-              ✨ 내 번호 중 당첨번호와 일치하는 숫자가 있어요! (흰 테두리 표시)
+              ✨ 내 번호 중 당첨번호와 일치하는 숫자가 있어요!
             </p>
           )}
           <button
