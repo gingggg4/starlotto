@@ -1,40 +1,54 @@
-// 동행복권 공식 API 프록시 (CORS 우회)
 export async function GET() {
-  const latestDrwNo = estimateLatestDrawNo();
+  const latest = estimateLatestDrawNo();
 
-  // 최근 3회차 중 데이터가 있는 회차를 찾음
-  for (let drwNo = latestDrwNo; drwNo >= latestDrwNo - 3; drwNo--) {
-    try {
-      const res = await fetch(
-        `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drwNo}`,
-        { next: { revalidate: 3600 } },
-      );
-      const data = await res.json();
-
-      if (data.returnValue === 'success') {
-        return Response.json({
-          success: true,
-          data: {
-            drwNo: data.drwNo,
-            drwNoDate: data.drwNoDate,
-            numbers: [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6],
-            bonusNo: data.bnusNo,
-            firstWinamnt: data.firstWinamnt,
-            firstPrzwnerCo: data.firstPrzwnerCo,
-          },
-        });
-      }
-    } catch {
-      // 해당 회차 없으면 다음 시도
-    }
+  // 최근 5회차 중 성공하는 회차 데이터 반환
+  for (let drwNo = latest; drwNo >= latest - 5; drwNo--) {
+    const result = await fetchDraw(drwNo);
+    if (result) return Response.json({ success: true, data: result });
   }
 
   return Response.json({ success: false, error: '당첨 정보를 불러올 수 없습니다.' });
 }
 
-// 1회차(2002-12-07) 기준으로 현재 회차 추정
+async function fetchDraw(drwNo: number) {
+  const apiUrl = `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drwNo}`;
+
+  // 방법 1: 직접 호출
+  try {
+    const res = await fetch(apiUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      next: { revalidate: 3600 },
+    });
+    const data = await res.json();
+    if (data.returnValue === 'success') return parse(data);
+  } catch {}
+
+  // 방법 2: allorigins 프록시 우회
+  try {
+    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+    const res = await fetch(proxy, { next: { revalidate: 3600 } });
+    const wrapper = await res.json();
+    if (wrapper.contents) {
+      const data = JSON.parse(wrapper.contents);
+      if (data.returnValue === 'success') return parse(data);
+    }
+  } catch {}
+
+  return null;
+}
+
+function parse(d: Record<string, unknown>) {
+  return {
+    drwNo: d.drwNo,
+    drwNoDate: d.drwNoDate,
+    numbers: [d.drwtNo1, d.drwtNo2, d.drwtNo3, d.drwtNo4, d.drwtNo5, d.drwtNo6],
+    bonusNo: d.bnusNo,
+    firstWinamnt: d.firstWinamnt,
+    firstPrzwnerCo: d.firstPrzwnerCo,
+  };
+}
+
 function estimateLatestDrawNo(): number {
   const firstDraw = new Date('2002-12-07').getTime();
-  const now = Date.now();
-  return Math.floor((now - firstDraw) / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return Math.floor((Date.now() - firstDraw) / (7 * 24 * 60 * 60 * 1000)) + 1;
 }

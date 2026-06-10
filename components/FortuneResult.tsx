@@ -142,12 +142,12 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
             {lottoLoading ? '불러오는 중...' : '🏆 당첨번호 확인'}
           </button>
           <a
-            href="https://www.dhlottery.co.kr/gameResult.do?method=byBall"
+            href="https://search.naver.com/search.naver?query=로또+당첨번호"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 py-2.5 rounded-xl bg-yellow-500/20 border border-yellow-400/30 text-yellow-200 text-xs font-semibold hover:bg-yellow-500/30 transition-all text-center block"
+            className="flex-1 py-2.5 rounded-xl bg-green-500/20 border border-green-400/30 text-green-200 text-xs font-semibold hover:bg-green-500/30 transition-all text-center block"
           >
-            🔗 공식 사이트
+            🔍 네이버 검색
           </a>
         </div>
       </div>
