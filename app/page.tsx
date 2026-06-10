@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import FortuneForm from '@/components/FortuneForm';
 import FortuneResult from '@/components/FortuneResult';
+import FortuneHistory from '@/components/FortuneHistory';
 import { FortuneInput, FortuneResult as FortuneResultType } from '@/types/fortune';
+import { saveToHistory } from '@/lib/history';
 
 export default function Home() {
   const [result, setResult] = useState<FortuneResultType | null>(null);
@@ -27,6 +29,7 @@ export default function Home() {
       if (json.success && json.data) {
         setResult(json.data);
         setIsFallback(json.fallback === true);
+        saveToHistory(json.data, input.birthDate); // 기록 저장
       } else {
         throw new Error(json.error || '운세 생성 실패');
       }
@@ -74,7 +77,10 @@ export default function Home() {
             onReset={handleReset}
           />
         ) : (
-          <FortuneForm onSubmit={handleSubmit} isLoading={isLoading} />
+          <>
+            <FortuneForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <FortuneHistory />
+          </>
         )}
       </div>
 
