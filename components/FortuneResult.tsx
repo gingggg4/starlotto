@@ -1,6 +1,7 @@
 'use client';
 
 import type { FortuneResult } from '@/types/fortune';
+import LottoGame from './LottoGame';
 
 interface FortuneResultProps {
   result: FortuneResult;
@@ -87,18 +88,6 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
         </div>
       </div>
 
-      {/* 오늘의 타로 카드 */}
-      <div className="rounded-3xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-300/20 p-5 text-center">
-        <p className="text-xs text-indigo-300 mb-3">🔮 오늘의 타로 카드</p>
-        <div className="text-6xl mb-2">{result.tarot.emoji}</div>
-        <p className="text-white font-bold text-lg">{result.tarot.name}</p>
-        <p className="text-indigo-300 text-xs italic mb-2">{result.tarot.nameEn}</p>
-        <div className="inline-block px-3 py-1 rounded-full bg-white/10 text-yellow-300 text-xs font-semibold mb-3">
-          {result.tarot.keyword}
-        </div>
-        <p className="text-white/90 text-sm leading-relaxed">{result.tarot.meaning}</p>
-      </div>
-
       {/* 행운 정보 3개 */}
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-2xl bg-white/10 border border-purple-300/20 p-3 text-center">
@@ -139,11 +128,7 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
             <p className="text-center text-xs text-purple-400 mb-2">{i + 1}세트</p>
             <div className="flex justify-center gap-1.5 flex-wrap">
               {row.map((n) => (
-                <LottoBall
-                  key={`${i}-${n}`}
-                  number={n}
-                  size="sm"
-                />
+                <LottoBall key={`${i}-${n}`} number={n} size="sm" />
               ))}
             </div>
           </div>
@@ -152,6 +137,9 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
           * 이 번호는 재미용입니다. 당첨을 보장하지 않습니다.
         </p>
       </div>
+
+      {/* 운명의 6개 뽑기 게임 */}
+      <LottoGame luckyNumbers={result.luckyNumbers} />
 
       {/* 다시 보기 버튼 */}
       <button

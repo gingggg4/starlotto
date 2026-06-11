@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     const parsed = JSON.parse(jsonText);
 
-    // Claude가 누락한 필드는 fallback에서 채워줌 (타로는 항상 fallback)
+    // Claude가 누락한 필드는 fallback에서 채워줌
     const fallback = getFallbackFortune(zodiac, zodiacEmoji, birthDate, gender);
 
     const result: FortuneResult = {
@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
       zodiacEmoji,
       fortune: parsed.fortune ?? fallback.fortune,
       score: parsed.score ?? fallback.score,
-      tarot: fallback.tarot,
       luckyNumbers: parsed.luckyNumbers ?? fallback.luckyNumbers,
       luckyColor: parsed.luckyColor ?? fallback.luckyColor,
       luckyColorHex: parsed.luckyColorHex ?? fallback.luckyColorHex,
