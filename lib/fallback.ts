@@ -134,6 +134,59 @@ const LUCKY_DAYS: string[] = [
   '금요일', '토요일', '일요일', '이번 주말',
 ];
 
+// 타로 5장 — 메이저 아르카나 중 가장 긍정적인 정방향 의미를 가진 카드
+const TAROT_CARDS = [
+  {
+    name: '태양',
+    nameEn: 'The Sun',
+    emoji: '☀️',
+    keyword: '성공·기쁨',
+    meaning: '밝은 에너지가 가득한 날. 노력의 결실이 빛나기 시작합니다.',
+  },
+  {
+    name: '별',
+    nameEn: 'The Star',
+    emoji: '⭐',
+    keyword: '희망·치유',
+    meaning: '오랜 기다림 끝에 희망의 빛이 보입니다. 마음의 평화가 찾아옵니다.',
+  },
+  {
+    name: '마술사',
+    nameEn: 'The Magician',
+    emoji: '🪄',
+    keyword: '실행·창조',
+    meaning: '모든 도구가 갖춰진 날. 의지를 행동으로 옮기면 원하는 것을 이룹니다.',
+  },
+  {
+    name: '여황제',
+    nameEn: 'The Empress',
+    emoji: '👑',
+    keyword: '풍요·창조',
+    meaning: '풍요와 사랑의 기운이 가득합니다. 마음의 여유가 새로운 기회를 만듭니다.',
+  },
+  {
+    name: '세계',
+    nameEn: 'The World',
+    emoji: '🌍',
+    keyword: '완성·성취',
+    meaning: '한 사이클의 완성. 그동안 쌓아온 모든 것이 결실을 맺는 시기입니다.',
+  },
+];
+
+// 종합 점수 + 4가지 운 점수 계산 (seed 기반)
+function generateScore(rng: () => number) {
+  // 종합 점수: 60~99 사이 (너무 낮으면 기분 나쁘니까)
+  const total = 60 + Math.floor(rng() * 40);
+  // 세부 점수: 2~5 별 (1점은 없음)
+  return {
+    total,
+    love: 2 + Math.floor(rng() * 4),
+    money: 2 + Math.floor(rng() * 4),
+    health: 2 + Math.floor(rng() * 4),
+    work: 2 + Math.floor(rng() * 4),
+  };
+}
+
 // ── 공개 함수 ──────────────────────────────────────────────────────
 export function getFallbackFortune(
   zodiac: string,
@@ -151,6 +204,8 @@ export function getFallbackFortune(
   const color = pickFrom(rng, COLORS);
   const luckyPlace = pickFrom(rng, PLACES);
   const luckyDay = pickFrom(rng, LUCKY_DAYS);
+  const tarot = pickFrom(rng, TAROT_CARDS);
+  const score = generateScore(rng);
   const luckyNumbers = pickUniqueNumbers(rng, 1, 45, 6);
   const lotto1 = pickUniqueNumbers(rng, 1, 45, 6);
   const lotto2 = pickUniqueNumbers(rng, 1, 45, 6);
@@ -159,6 +214,8 @@ export function getFallbackFortune(
     zodiac,
     zodiacEmoji,
     fortune,
+    score,
+    tarot,
     luckyNumbers,
     luckyColor: color.name,
     luckyColorHex: color.hex,

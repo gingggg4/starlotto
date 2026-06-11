@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import type { FortuneResult } from '@/types/fortune';
 
 interface FortuneResultProps {
@@ -9,16 +8,7 @@ interface FortuneResultProps {
   onReset: () => void;
 }
 
-interface LottoWinData {
-  drwNo: number;
-  drwNoDate: string;
-  numbers: number[];
-  bonusNo: number;
-  firstWinamnt: number;
-  firstPrzwnerCo: number;
-}
-
-function LottoBall({ number, size = 'md', highlight = false }: { number: number; size?: 'sm' | 'md'; highlight?: boolean }) {
+function LottoBall({ number, size = 'md' }: { number: number; size?: 'sm' | 'md' }) {
   const getColor = (n: number) => {
     if (n <= 10) return 'bg-yellow-400 text-yellow-900';
     if (n <= 20) return 'bg-blue-400 text-blue-900';
@@ -28,37 +18,28 @@ function LottoBall({ number, size = 'md', highlight = false }: { number: number;
   };
   const sizeClass = size === 'sm' ? 'w-9 h-9 text-sm' : 'w-11 h-11 text-base';
   return (
-    <div className={`${sizeClass} ${getColor(number)} rounded-full flex items-center justify-center font-black shadow-md ${highlight ? 'ring-2 ring-white scale-110' : ''}`}>
+    <div className={`${sizeClass} ${getColor(number)} rounded-full flex items-center justify-center font-black shadow-md`}>
       {number}
     </div>
   );
 }
 
-export default function FortuneResult({ result, onReset }: FortuneResultProps) {
-  const [lottoWin, setLottoWin] = useState<LottoWinData | null>(null);
-  const [lottoLoading, setLottoLoading] = useState(false);
-  const [lottoOpen, setLottoOpen] = useState(false);
+function StarRating({ value }: { value: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} className={i <= value ? 'text-yellow-400' : 'text-purple-700/50'}>
+          ★
+        </span>
+      ))}
+    </div>
+  );
+}
 
+export default function FortuneResult({ result, onReset }: FortuneResultProps) {
   const today = new Date().toLocaleDateString('ko-KR', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
-
-  const fetchLottoResult = async () => {
-    if (lottoWin) { setLottoOpen(true); return; }
-    setLottoLoading(true);
-    try {
-      const res = await fetch('/api/lotto');
-      const json = await res.json();
-      if (json.success) {
-        setLottoWin(json.data);
-        setLottoOpen(true);
-      }
-    } catch {
-      // 실패 시 조용히 처리
-    } finally {
-      setLottoLoading(false);
-    }
-  };
 
   return (
     <div className="w-full max-w-sm mx-auto space-y-4 animate-fade-in">
@@ -76,6 +57,46 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
       <div className="rounded-3xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-300/20 p-5 text-center">
         <p className="text-xs text-purple-300 mb-2">✨ 오늘의 운세</p>
         <p className="text-white font-medium text-base leading-relaxed">{result.fortune}</p>
+      </div>
+
+      {/* 행운 점수 */}
+      <div className="rounded-3xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-300/20 p-5">
+        <div className="text-center mb-4">
+          <p className="text-xs text-yellow-300 mb-2">🍀 오늘의 행운 점수</p>
+          <p className="text-white text-4xl font-black">
+            {result.score.total}<span className="text-yellow-300 text-2xl">점</span>
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="flex items-center justify-between">
+            <span className="text-purple-200 text-xs">💖 사랑운</span>
+            <StarRating value={result.score.love} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-purple-200 text-xs">💰 금전운</span>
+            <StarRating value={result.score.money} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-purple-200 text-xs">🌿 건강운</span>
+            <StarRating value={result.score.health} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-purple-200 text-xs">💼 직장운</span>
+            <StarRating value={result.score.work} />
+          </div>
+        </div>
+      </div>
+
+      {/* 오늘의 타로 카드 */}
+      <div className="rounded-3xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-300/20 p-5 text-center">
+        <p className="text-xs text-indigo-300 mb-3">🔮 오늘의 타로 카드</p>
+        <div className="text-6xl mb-2">{result.tarot.emoji}</div>
+        <p className="text-white font-bold text-lg">{result.tarot.name}</p>
+        <p className="text-indigo-300 text-xs italic mb-2">{result.tarot.nameEn}</p>
+        <div className="inline-block px-3 py-1 rounded-full bg-white/10 text-yellow-300 text-xs font-semibold mb-3">
+          {result.tarot.keyword}
+        </div>
+        <p className="text-white/90 text-sm leading-relaxed">{result.tarot.meaning}</p>
       </div>
 
       {/* 행운 정보 3개 */}
@@ -122,7 +143,6 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
                   key={`${i}-${n}`}
                   number={n}
                   size="sm"
-                  highlight={lottoWin?.numbers.includes(n)}
                 />
               ))}
             </div>
@@ -131,59 +151,7 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
         <p className="text-center text-purple-400/50 text-xs mt-2">
           * 이 번호는 재미용입니다. 당첨을 보장하지 않습니다.
         </p>
-
-        {/* 당첨번호 버튼 2개 */}
-        <div className="flex gap-2 pt-1">
-          <button
-            onClick={fetchLottoResult}
-            disabled={lottoLoading}
-            className="flex-1 py-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all disabled:opacity-50"
-          >
-            {lottoLoading ? '불러오는 중...' : '🏆 당첨번호 확인'}
-          </button>
-          <a
-            href="https://search.naver.com/search.naver?query=로또+당첨번호"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 py-2.5 rounded-xl bg-green-500/20 border border-green-400/30 text-green-200 text-xs font-semibold hover:bg-green-500/30 transition-all text-center block"
-          >
-            🔍 네이버 검색
-          </a>
-        </div>
       </div>
-
-      {/* 최신 당첨번호 표시 */}
-      {lottoOpen && lottoWin && (
-        <div className="rounded-3xl bg-white/10 border border-yellow-400/20 p-4 space-y-3">
-          <div className="text-center">
-            <p className="text-yellow-300 text-xs font-semibold">🏆 제 {lottoWin.drwNo}회 당첨번호</p>
-            <p className="text-purple-400/70 text-xs mt-0.5">{lottoWin.drwNoDate}</p>
-          </div>
-          <div className="flex justify-center gap-1.5 flex-wrap">
-            {lottoWin.numbers.map((n) => (
-              <LottoBall key={n} number={n} size="sm" />
-            ))}
-            <div className="flex items-center text-purple-300 text-xs mx-1">+</div>
-            <div className="w-9 h-9 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-black shadow-md">
-              {lottoWin.bonusNo}
-            </div>
-          </div>
-          <p className="text-center text-yellow-300/70 text-xs">
-            1등 {lottoWin.firstPrzwnerCo}명 · {(lottoWin.firstWinamnt / 100000000).toFixed(1)}억원
-          </p>
-          {result.lottoNumbers.some(row => row.some(n => lottoWin.numbers.includes(n))) && (
-            <p className="text-center text-green-400 text-xs font-semibold">
-              ✨ 내 번호 중 당첨번호와 일치하는 숫자가 있어요!
-            </p>
-          )}
-          <button
-            onClick={() => setLottoOpen(false)}
-            className="w-full py-2 rounded-xl bg-white/5 text-purple-400 text-xs hover:bg-white/10 transition-all"
-          >
-            닫기
-          </button>
-        </div>
-      )}
 
       {/* 다시 보기 버튼 */}
       <button
