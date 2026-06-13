@@ -16,6 +16,7 @@ export interface FortuneScore {
 }
 
 export interface FortuneResult {
+  birthDate: string;
   zodiac: string;
   zodiacEmoji: string;
   fortune: string;

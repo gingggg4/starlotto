@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
     const lottoNumbers = fallback.lottoNumbers;
 
     const result: FortuneResult = {
+      birthDate,
       zodiac,
       zodiacEmoji,
       fortune: parsed.fortune ?? fallback.fortune,

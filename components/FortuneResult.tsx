@@ -44,9 +44,11 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
   return (
     <div className="w-full max-w-sm mx-auto space-y-4 animate-fade-in">
 
-      {/* 날짜 & 별자리 */}
+      {/* 생년월일 & 별자리 */}
       <div className="text-center space-y-1">
-        <p className="text-purple-300 text-xs">{today}</p>
+        <p className="text-purple-300 text-xs">
+          {result.birthDate.replace(/-/g, '. ')} 생
+        </p>
         <div className="flex items-center justify-center gap-2">
           <span className="text-4xl">{result.zodiacEmoji}</span>
           <h2 className="text-white font-bold text-2xl">{result.zodiac}</h2>
@@ -55,7 +57,8 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
 
       {/* 오늘의 운세 */}
       <div className="rounded-3xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-300/20 p-5 text-center">
-        <p className="text-xs text-purple-300 mb-2">✨ 오늘의 운세</p>
+        <p className="text-xs text-purple-300 mb-1">✨ 오늘의 운세</p>
+        <p className="text-purple-400 text-xs mb-3">{today}</p>
         <p className="text-white font-medium text-base leading-relaxed">{result.fortune}</p>
       </div>
 

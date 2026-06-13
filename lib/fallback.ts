@@ -228,6 +228,7 @@ export function getFallbackFortune(
   }
 
   return {
+    birthDate,
     zodiac,
     zodiacEmoji,
     fortune,
