@@ -1,7 +1,6 @@
 'use client';
 
 import type { FortuneResult } from '@/types/fortune';
-import LottoGame from './LottoGame';
 
 interface FortuneResultProps {
   result: FortuneResult;
@@ -102,7 +101,7 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
         </div>
         <div className="rounded-2xl bg-white/10 border border-purple-300/20 p-3 text-center">
           <p className="text-2xl mb-1">🌟</p>
-          <p className="text-purple-300 text-xs">별빛이 머무는 시간</p>
+          <p className="text-purple-300 text-xs">행운의 시간</p>
           <p className="text-white text-xs font-semibold mt-0.5">{result.luckyTime}</p>
         </div>
       </div>
@@ -137,9 +136,6 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
           * 이 번호는 재미용입니다. 당첨을 보장하지 않습니다.
         </p>
       </div>
-
-      {/* 운명의 6개 뽑기 게임 */}
-      <LottoGame luckyNumbers={result.luckyNumbers} />
 
       {/* 다시 보기 버튼 */}
       <button
