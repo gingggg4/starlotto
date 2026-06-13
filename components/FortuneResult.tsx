@@ -106,16 +106,25 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
         </div>
       </div>
 
-      {/* 행운의 숫자 */}
-      <div className="rounded-3xl bg-white/10 border border-purple-300/20 p-4">
-        <p className="text-center text-xs text-purple-300 mb-3">🔢 행운의 숫자</p>
-        <div className="flex justify-center gap-2 flex-wrap">
-          {result.luckyNumbers.map((n) => (
-            <LottoBall key={n} number={n} size="md" />
-          ))}
+      {/* 오늘의 행운 숫자 (1개) */}
+      <div className="rounded-3xl bg-gradient-to-br from-purple-500/15 to-pink-500/15 border border-purple-300/30 p-5">
+        <p className="text-center text-xs text-purple-300 mb-3">🔢 오늘의 행운 숫자</p>
+        <div className="flex justify-center">
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center text-3xl font-black shadow-xl ${
+            result.luckyNumber <= 10 ? 'bg-yellow-400 text-yellow-900'
+            : result.luckyNumber <= 20 ? 'bg-blue-400 text-blue-900'
+            : result.luckyNumber <= 30 ? 'bg-red-400 text-red-900'
+            : result.luckyNumber <= 40 ? 'bg-gray-500 text-gray-100'
+            : 'bg-green-400 text-green-900'
+          } ring-4 ring-white/20`}>
+            {result.luckyNumber}
+          </div>
         </div>
-        <p className="text-center text-purple-400/50 text-xs mt-3">
-          행운의 숫자는 생년월일, 별자리, 조회 날짜를 기반으로 생성됩니다.
+        <p className="text-center text-purple-400/50 text-xs mt-4">
+          오늘 당신에게 가장 강한 기운을 주는 숫자예요
+        </p>
+        <p className="text-center text-purple-400/40 text-xs mt-1">
+          (생년월일, 별자리, 조회 날짜 기반)
         </p>
       </div>
 

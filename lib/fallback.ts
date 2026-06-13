@@ -168,7 +168,7 @@ export function getFallbackFortune(
   const luckyPlace = pickFrom(rng, PLACES);
   const luckyTime = pickFrom(rng, LUCKY_TIMES);
   const score = generateScore(rng);
-  const luckyNumbers = pickUniqueNumbers(rng, 1, 45, 6);
+  const luckyNumber = 1 + Math.floor(rng() * 45);
 
   // 로또 5세트 생성
   const lottoNumbers: number[][] = [];
@@ -181,7 +181,7 @@ export function getFallbackFortune(
     zodiacEmoji,
     fortune,
     score,
-    luckyNumbers,
+    luckyNumber,
     luckyColor: color.name,
     luckyColorHex: color.hex,
     luckyPlace,

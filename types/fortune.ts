@@ -20,7 +20,7 @@ export interface FortuneResult {
   zodiacEmoji: string;
   fortune: string;
   score: FortuneScore;
-  luckyNumbers: number[];
+  luckyNumber: number;
   luckyColor: string;
   luckyColorHex: string;
   luckyPlace: string;
