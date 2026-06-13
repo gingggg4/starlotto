@@ -173,48 +173,6 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
         </p>
       </div>
 
-      {/* 다음 7일 운세 미리보기 (회원 전용) */}
-      <div className="rounded-3xl bg-gradient-to-br from-indigo-500/15 to-purple-500/15 border border-indigo-300/30 p-4 space-y-3">
-        <div className="text-center">
-          <p className="text-indigo-200 text-sm font-bold mb-1">🔮 다음 7일 운세 미리보기</p>
-          <p className="text-purple-300 text-xs">미래의 운명을 살짝 들여다볼까요?</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          {Array.from({ length: 7 }, (_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() + i + 1);
-            const dayLabel = ['내일', '모레', '글피'][i] ?? `+${i + 1}일`;
-            const dateLabel = d.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
-
-            return (
-              <div
-                key={i}
-                className="relative rounded-2xl bg-white/10 border border-purple-300/20 p-3 text-center overflow-hidden"
-              >
-                <p className="text-purple-200 text-xs font-semibold">{dayLabel}</p>
-                <p className="text-purple-400 text-xs mt-0.5">{dateLabel}</p>
-                <div className="mt-2 filter blur-sm select-none pointer-events-none">
-                  <p className="text-white text-xl font-black">??점</p>
-                </div>
-                <div className="absolute top-2 right-2 text-yellow-300 text-sm">🔒</div>
-              </div>
-            );
-          })}
-        </div>
-
-        <button
-          onClick={() => alert('🔮 곧 만나요!\n\n회원가입하면 다음 7일 운세를 모두 볼 수 있어요.\n매일 아침 카톡으로 받아보는 기능도 곧 출시 예정이에요 ✨')}
-          className="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-400 to-purple-400 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 active:scale-95 transition-all"
-        >
-          ✨ 회원가입하고 7일 운세 보기
-        </button>
-
-        <p className="text-center text-purple-400/50 text-xs">
-          ※ 회원이 되면 매일 아침 카톡으로도 받아볼 수 있어요
-        </p>
-      </div>
-
       {/* 다시 보기 버튼 */}
       <button
         onClick={onReset}
