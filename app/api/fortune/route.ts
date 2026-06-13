@@ -91,15 +91,8 @@ export async function POST(request: NextRequest) {
     const fallback = getFallbackFortune(zodiac, zodiacEmoji, birthDate, gender);
 
     const luckyNumber = parsed.luckyNumber ?? fallback.luckyNumber;
-    const rawLotto: number[][] = parsed.lottoNumbers ?? fallback.lottoNumbers;
-
-    // 안전장치: 각 세트에 행운 숫자가 빠져있으면 강제 포함
-    const lottoNumbers = rawLotto.map((set: number[]) => {
-      if (set.includes(luckyNumber)) return [...set].sort((a, b) => a - b);
-      // 가장 큰 숫자 제거하고 행운 숫자 추가
-      const trimmed = [...set].sort((a, b) => a - b).slice(0, 5);
-      return [...trimmed, luckyNumber].sort((a, b) => a - b);
-    });
+    // Claude 응답 검증이 까다로우니, 로또 번호는 항상 fallback의 통계 패턴 보정된 것 사용
+    const lottoNumbers = fallback.lottoNumbers;
 
     const result: FortuneResult = {
       zodiac,

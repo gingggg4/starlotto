@@ -46,6 +46,45 @@ function pickUniqueNumbersExcluding(rng: () => number, min: number, max: number,
   return pool.slice(0, count);
 }
 
+// 로또 통계 패턴 체크 (자주 나오는 조합인지)
+function isBalancedLottoSet(set: number[]): boolean {
+  // 1. 합계 100~175
+  const sum = set.reduce((a, b) => a + b, 0);
+  if (sum < 100 || sum > 175) return false;
+
+  // 2. 홀수 2~4개 (즉 홀짝 비율 2:4 ~ 4:2)
+  const odds = set.filter((n) => n % 2 === 1).length;
+  if (odds < 2 || odds > 4) return false;
+
+  // 3. 번호대 분포 체크 (1-9, 10-19, 20-29, 30-39, 40-45)
+  const ranges = [0, 0, 0, 0, 0];
+  for (const n of set) {
+    if (n <= 9) ranges[0]++;
+    else if (n <= 19) ranges[1]++;
+    else if (n <= 29) ranges[2]++;
+    else if (n <= 39) ranges[3]++;
+    else ranges[4]++;
+  }
+  // 최소 3개 번호대 사용
+  if (ranges.filter((r) => r > 0).length < 3) return false;
+  // 한 번호대에 3개 초과 금지
+  if (ranges.some((r) => r > 3)) return false;
+
+  return true;
+}
+
+// 통계 패턴 만족하는 로또 세트 1개 생성 (행운 숫자 포함)
+function generateBalancedLottoSet(rng: () => number, luckyNumber: number): number[] {
+  for (let attempt = 0; attempt < 200; attempt++) {
+    const others = pickUniqueNumbersExcluding(rng, 1, 45, 5, luckyNumber);
+    const set = [...others, luckyNumber].sort((a, b) => a - b);
+    if (isBalancedLottoSet(set)) return set;
+  }
+  // 200번 시도해도 못 찾으면 마지막 후보 반환 (안전장치)
+  const others = pickUniqueNumbersExcluding(rng, 1, 45, 5, luckyNumber);
+  return [...others, luckyNumber].sort((a, b) => a - b);
+}
+
 function pickFrom<T>(rng: () => number, arr: T[]): T {
   return arr[Math.floor(rng() * arr.length)];
 }
@@ -180,12 +219,10 @@ export function getFallbackFortune(
   const score = generateScore(rng);
   const luckyNumber = 1 + Math.floor(rng() * 45);
 
-  // 로또 5세트 생성 — 각 세트는 행운 숫자를 반드시 포함
+  // 로또 5세트 생성 — 통계 패턴 만족 + 행운 숫자 포함
   const lottoNumbers: number[][] = [];
   for (let i = 0; i < 5; i++) {
-    // 행운 숫자 제외한 1~45에서 5개 추출 후 행운 숫자 추가
-    const others = pickUniqueNumbersExcluding(rng, 1, 45, 5, luckyNumber);
-    lottoNumbers.push([...others, luckyNumber].sort((a, b) => a - b));
+    lottoNumbers.push(generateBalancedLottoSet(rng, luckyNumber));
   }
 
   return {
