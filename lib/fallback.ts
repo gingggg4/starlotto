@@ -129,9 +129,10 @@ const PLACES: string[] = [
   '산', '놀이공원', '식물원', '박물관',
 ];
 
-const LUCKY_DAYS: string[] = [
-  '월요일', '화요일', '수요일', '목요일',
-  '금요일', '토요일', '일요일', '이번 주말',
+const LUCKY_TIMES: string[] = [
+  '오전 7~9시', '오전 9~11시', '정오 12~1시',
+  '오후 2~4시', '오후 4~6시', '저녁 6~8시',
+  '저녁 8~10시', '밤 10~12시',
 ];
 
 // 종합 점수 + 4가지 운 점수 계산 (seed 기반)
@@ -164,7 +165,7 @@ export function getFallbackFortune(
 
   const color = pickFrom(rng, COLORS);
   const luckyPlace = pickFrom(rng, PLACES);
-  const luckyDay = pickFrom(rng, LUCKY_DAYS);
+  const luckyTime = pickFrom(rng, LUCKY_TIMES);
   const score = generateScore(rng);
   const luckyNumbers = pickUniqueNumbers(rng, 1, 45, 6);
   const lotto1 = pickUniqueNumbers(rng, 1, 45, 6);
@@ -179,7 +180,7 @@ export function getFallbackFortune(
     luckyColor: color.name,
     luckyColorHex: color.hex,
     luckyPlace,
-    luckyDay,
+    luckyTime,
     lottoNumbers: [lotto1, lotto2],
   };
 }

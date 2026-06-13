@@ -24,6 +24,6 @@ export interface FortuneResult {
   luckyColor: string;
   luckyColorHex: string;
   luckyPlace: string;
-  luckyDay: string;
+  luckyTime: string;
   lottoNumbers: [number[], number[]];
 }

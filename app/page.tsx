@@ -86,7 +86,7 @@ export default function Home() {
 
       {/* 푸터 */}
       <footer className="relative z-10 mt-10 text-center text-purple-500 text-xs">
-        <p>별로또 © 2024 · 재미용 서비스입니다</p>
+        <p>별로또 © 2026 · 재미용 서비스입니다</p>
       </footer>
     </main>
   );
