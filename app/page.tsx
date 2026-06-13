@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import FortuneForm from '@/components/FortuneForm';
 import FortuneResult from '@/components/FortuneResult';
-import FortuneHistory from '@/components/FortuneHistory';
+import CountdownBanner from '@/components/CountdownBanner';
+import HistoryModal from '@/components/HistoryModal';
 import { FortuneInput, FortuneResult as FortuneResultType } from '@/types/fortune';
 import { saveToHistory } from '@/lib/history';
 
@@ -11,6 +12,7 @@ export default function Home() {
   const [result, setResult] = useState<FortuneResultType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFallback, setIsFallback] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const handleSubmit = async (input: FortuneInput) => {
     setIsLoading(true);
@@ -29,7 +31,7 @@ export default function Home() {
       if (json.success && json.data) {
         setResult(json.data);
         setIsFallback(json.fallback === true);
-        saveToHistory(json.data, input.birthDate); // 기록 저장
+        saveToHistory(json.data, input.birthDate);
       } else {
         throw new Error(json.error || '운세 생성 실패');
       }
@@ -46,6 +48,13 @@ export default function Home() {
     setIsFallback(false);
   };
 
+  const handleHistorySelect = (selected: FortuneResultType) => {
+    setResult(selected);
+    setIsFallback(false);
+    setHistoryOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <main className="bg-star min-h-screen flex flex-col items-center py-10 px-4">
       {/* 배경 별들 */}
@@ -58,8 +67,15 @@ export default function Home() {
         <div className="absolute bottom-[20%] left-[30%] text-pink-300 text-xs star-3">✦</div>
       </div>
 
-      {/* 헤더 */}
-      <header className="text-center mb-8 relative z-10">
+      {/* 헤더 (운세 기록 버튼 우측 상단) */}
+      <header className="relative w-full max-w-sm mx-auto text-center mb-8 z-10">
+        <button
+          onClick={() => setHistoryOpen(true)}
+          className="absolute right-0 top-0 w-10 h-10 rounded-full bg-white/10 border border-purple-300/30 text-purple-200 text-lg hover:bg-white/20 active:scale-95 transition-all"
+          aria-label="운세 기록"
+        >
+          📖
+        </button>
         <h1 className="text-5xl font-black text-white mb-2">
           ⭐ 별로또
         </h1>
@@ -67,6 +83,11 @@ export default function Home() {
           별자리로 보는 오늘의 운세 & 행운의 로또번호
         </p>
       </header>
+
+      {/* 카운트다운 배너 */}
+      <div className="relative z-10 w-full">
+        <CountdownBanner />
+      </div>
 
       {/* 메인 컨텐츠 */}
       <div className="relative z-10 w-full">
@@ -77,12 +98,16 @@ export default function Home() {
             onReset={handleReset}
           />
         ) : (
-          <>
-            <FortuneForm onSubmit={handleSubmit} isLoading={isLoading} />
-            <FortuneHistory />
-          </>
+          <FortuneForm onSubmit={handleSubmit} isLoading={isLoading} />
         )}
       </div>
+
+      {/* 운세 기록 모달 */}
+      <HistoryModal
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        onSelect={handleHistorySelect}
+      />
 
       {/* 푸터 */}
       <footer className="relative z-10 mt-10 text-center text-purple-500 text-xs">

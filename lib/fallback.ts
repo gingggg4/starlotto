@@ -201,6 +201,49 @@ function generateScore(rng: () => number) {
   };
 }
 
+// 별점별 메시지 풀
+const LOVE_MESSAGES: Record<number, string[]> = {
+  5: ['운명적인 만남이 찾아올 수 있어요', '관계가 한 단계 더 깊어지는 날'],
+  4: ['마음 맞는 사람과 좋은 시간을 보내요', '따뜻한 기운이 가득한 하루'],
+  3: ['솔직한 표현이 관계를 깊게 해요', '평온한 마음으로 대화해보세요'],
+  2: ['조급함보다 차분한 마음이 필요해요', '오해 없이 명확하게 표현하세요'],
+};
+
+const MONEY_MESSAGES: Record<number, string[]> = {
+  5: ['예상치 못한 수익이 들어올 수 있어요', '재물의 흐름이 매우 좋은 날'],
+  4: ['꾸준한 수입이 안정적으로 들어와요', '작은 기회를 놓치지 마세요'],
+  3: ['투자보다 저축이 안전한 시기에요', '계획적인 소비가 필요해요'],
+  2: ['충동 구매를 자제하는 게 좋아요', '큰 결정은 다음으로 미루세요'],
+};
+
+const HEALTH_MESSAGES: Record<number, string[]> = {
+  5: ['활기찬 에너지가 가득한 하루에요', '컨디션 최상! 무엇이든 도전해요'],
+  4: ['운동 효과가 잘 나타나는 날이에요', '몸도 마음도 가벼운 하루'],
+  3: ['충분한 휴식이 필요한 날이에요', '평소 컨디션을 유지하세요'],
+  2: ['무리하지 말고 컨디션을 살펴요', '가벼운 스트레칭으로 풀어주세요'],
+};
+
+const WORK_MESSAGES: Record<number, string[]> = {
+  5: ['큰 성과를 이룰 수 있는 날이에요', '리더십이 빛나는 하루'],
+  4: ['동료와의 협업이 좋은 결과를 내요', '집중력이 좋아 일이 잘 풀려요'],
+  3: ['신중한 판단이 필요한 시기에요', '꼼꼼한 확인이 도움이 돼요'],
+  2: ['오해 없이 명확하게 소통하세요', '서두르지 말고 차근차근 진행해요'],
+};
+
+function pickScoreMessage(rng: () => number, score: number, messages: Record<number, string[]>): string {
+  const pool = messages[score] ?? messages[3];
+  return pool[Math.floor(rng() * pool.length)];
+}
+
+function generateScoreMessages(rng: () => number, score: { love: number; money: number; health: number; work: number }) {
+  return {
+    love: pickScoreMessage(rng, score.love, LOVE_MESSAGES),
+    money: pickScoreMessage(rng, score.money, MONEY_MESSAGES),
+    health: pickScoreMessage(rng, score.health, HEALTH_MESSAGES),
+    work: pickScoreMessage(rng, score.work, WORK_MESSAGES),
+  };
+}
+
 // ── 공개 함수 ──────────────────────────────────────────────────────
 export function getFallbackFortune(
   zodiac: string,
@@ -219,6 +262,7 @@ export function getFallbackFortune(
   const luckyPlace = pickFrom(rng, PLACES);
   const luckyTime = pickFrom(rng, LUCKY_TIMES);
   const score = generateScore(rng);
+  const scoreMessages = generateScoreMessages(rng, score);
   const luckyNumber = 1 + Math.floor(rng() * 45);
 
   // 로또 5세트 생성 — 통계 패턴 만족 + 행운 숫자 포함
@@ -233,6 +277,7 @@ export function getFallbackFortune(
     zodiacEmoji,
     fortune,
     score,
+    scoreMessages,
     luckyNumber,
     luckyColor: color.name,
     luckyColorHex: color.hex,

@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
       zodiacEmoji,
       fortune: parsed.fortune ?? fallback.fortune,
       score: parsed.score ?? fallback.score,
+      scoreMessages: fallback.scoreMessages,
       luckyNumber,
       luckyColor: parsed.luckyColor ?? fallback.luckyColor,
       luckyColorHex: parsed.luckyColorHex ?? fallback.luckyColorHex,

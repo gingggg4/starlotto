@@ -1,7 +1,7 @@
 import type { FortuneResult } from '@/types/fortune';
 
 const HISTORY_KEY = 'byeollotto_history';
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 7;
 
 export interface HistoryItem {
   id: string;
@@ -10,6 +10,8 @@ export interface HistoryItem {
   zodiac: string;
   zodiacEmoji: string;
   fortune: string;
+  totalScore: number;
+  fullResult: FortuneResult; // 전체 결과 (재현용)
 }
 
 export function saveToHistory(result: FortuneResult, birthDate: string): void {
@@ -30,6 +32,8 @@ export function saveToHistory(result: FortuneResult, birthDate: string): void {
     zodiac: result.zodiac,
     zodiacEmoji: result.zodiacEmoji,
     fortune: result.fortune,
+    totalScore: result.score.total,
+    fullResult: result,
   };
 
   const updated = [newItem, ...filtered].slice(0, MAX_ITEMS);

@@ -15,12 +15,20 @@ export interface FortuneScore {
   work: number;      // 직장운 (0~5)
 }
 
+export interface ScoreMessages {
+  love: string;
+  money: string;
+  health: string;
+  work: string;
+}
+
 export interface FortuneResult {
   birthDate: string;
   zodiac: string;
   zodiacEmoji: string;
   fortune: string;
   score: FortuneScore;
+  scoreMessages: ScoreMessages;
   luckyNumber: number;
   luckyColor: string;
   luckyColorHex: string;

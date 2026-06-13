@@ -70,22 +70,34 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
             {result.score.total}<span className="text-yellow-300 text-2xl">점</span>
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 mt-3">
-          <div className="flex items-center justify-between">
-            <span className="text-purple-200 text-xs">💖 사랑운</span>
-            <StarRating value={result.score.love} />
+        <div className="space-y-3 mt-3">
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-purple-200 text-xs">💖 사랑운</span>
+              <StarRating value={result.score.love} />
+            </div>
+            <p className="text-purple-300/70 text-xs">{result.scoreMessages.love}</p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-purple-200 text-xs">💰 금전운</span>
-            <StarRating value={result.score.money} />
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-purple-200 text-xs">💰 금전운</span>
+              <StarRating value={result.score.money} />
+            </div>
+            <p className="text-purple-300/70 text-xs">{result.scoreMessages.money}</p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-purple-200 text-xs">🌿 건강운</span>
-            <StarRating value={result.score.health} />
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-purple-200 text-xs">🌿 건강운</span>
+              <StarRating value={result.score.health} />
+            </div>
+            <p className="text-purple-300/70 text-xs">{result.scoreMessages.health}</p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-purple-200 text-xs">💼 직장운</span>
-            <StarRating value={result.score.work} />
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-purple-200 text-xs">💼 직장운</span>
+              <StarRating value={result.score.work} />
+            </div>
+            <p className="text-purple-300/70 text-xs">{result.scoreMessages.work}</p>
           </div>
         </div>
       </div>
