@@ -25,5 +25,5 @@ export interface FortuneResult {
   luckyColorHex: string;
   luckyPlace: string;
   luckyTime: string;
-  lottoNumbers: [number[], number[]];
+  lottoNumbers: number[][]; // 5세트
 }

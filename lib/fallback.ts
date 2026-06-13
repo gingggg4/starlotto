@@ -169,8 +169,12 @@ export function getFallbackFortune(
   const luckyTime = pickFrom(rng, LUCKY_TIMES);
   const score = generateScore(rng);
   const luckyNumbers = pickUniqueNumbers(rng, 1, 45, 6);
-  const lotto1 = pickUniqueNumbers(rng, 1, 45, 6);
-  const lotto2 = pickUniqueNumbers(rng, 1, 45, 6);
+
+  // 로또 5세트 생성
+  const lottoNumbers: number[][] = [];
+  for (let i = 0; i < 5; i++) {
+    lottoNumbers.push(pickUniqueNumbers(rng, 1, 45, 6));
+  }
 
   return {
     zodiac,
@@ -182,6 +186,6 @@ export function getFallbackFortune(
     luckyColorHex: color.hex,
     luckyPlace,
     luckyTime,
-    lottoNumbers: [lotto1, lotto2],
+    lottoNumbers,
   };
 }

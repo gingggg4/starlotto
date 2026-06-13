@@ -121,8 +121,12 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
 
       {/* 로또 번호 */}
       <div className="rounded-3xl bg-white/10 border border-purple-300/20 p-4 space-y-3">
-        <p className="text-center text-xs text-purple-300">🎱 오늘의 로또 번호</p>
-        {result.lottoNumbers.map((row, i) => (
+        <p className="text-center text-xs text-purple-300">
+          🎱 오늘의 로또 번호 <span className="text-purple-400">(2/5세트 공개)</span>
+        </p>
+
+        {/* 공개 세트 (1, 2) */}
+        {result.lottoNumbers.slice(0, 2).map((row, i) => (
           <div key={i}>
             <p className="text-center text-xs text-purple-400 mb-2">{i + 1}세트</p>
             <div className="flex justify-center gap-1.5 flex-wrap">
@@ -132,6 +136,29 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
             </div>
           </div>
         ))}
+
+        {/* 잠긴 세트 (3, 4, 5) */}
+        {result.lottoNumbers.slice(2, 5).map((row, i) => (
+          <div key={i + 2} className="relative">
+            <p className="text-center text-xs text-purple-400 mb-2 flex items-center justify-center gap-1">
+              {i + 3}세트 <span className="text-yellow-300">🔒</span>
+            </p>
+            <div className="flex justify-center gap-1.5 flex-wrap filter blur-sm select-none pointer-events-none">
+              {row.map((n) => (
+                <LottoBall key={`${i + 2}-${n}`} number={n} size="sm" />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {/* 회원가입 유도 버튼 */}
+        <button
+          onClick={() => alert('🚧 곧 만나요!\n\n회원가입 기능을 준비 중입니다.\n매일 아침 카톡으로 5세트 받는 기능도 곧 출시 예정이에요 ✨')}
+          className="w-full py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 font-bold text-sm shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50 active:scale-95 transition-all"
+        >
+          ✨ 회원가입하고 5세트 모두 보기
+        </button>
+
         <p className="text-center text-purple-400/50 text-xs mt-2">
           * 이 번호는 재미용입니다. 당첨을 보장하지 않습니다.
         </p>
