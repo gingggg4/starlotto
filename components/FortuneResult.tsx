@@ -95,13 +95,13 @@ export default function FortuneResult({ result, onReset }: FortuneResultProps) {
           <p className="text-white text-xs font-semibold mt-0.5">{result.luckyColor}</p>
         </div>
         <div className="rounded-2xl bg-white/10 border border-purple-300/20 p-3 text-center">
-          <p className="text-2xl mb-1">📍</p>
-          <p className="text-purple-300 text-xs">행운의 장소</p>
+          <p className="text-2xl mb-1">🍀</p>
+          <p className="text-purple-300 text-xs">로또 명당</p>
           <p className="text-white text-xs font-semibold mt-0.5">{result.luckyPlace}</p>
         </div>
         <div className="rounded-2xl bg-white/10 border border-purple-300/20 p-3 text-center">
-          <p className="text-2xl mb-1">🌟</p>
-          <p className="text-purple-300 text-xs">행운의 시간</p>
+          <p className="text-2xl mb-1">⏰</p>
+          <p className="text-purple-300 text-xs">로또 황금 타임</p>
           <p className="text-white text-xs font-semibold mt-0.5">{result.luckyTime}</p>
         </div>
       </div>
