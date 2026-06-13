@@ -36,6 +36,16 @@ function pickUniqueNumbers(rng: () => number, min: number, max: number, count: n
   return pool.slice(0, count).sort((a, b) => a - b);
 }
 
+// 특정 숫자 제외하고 고유 숫자 추출
+function pickUniqueNumbersExcluding(rng: () => number, min: number, max: number, count: number, exclude: number): number[] {
+  const pool = Array.from({ length: max - min + 1 }, (_, i) => i + min).filter((n) => n !== exclude);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count);
+}
+
 function pickFrom<T>(rng: () => number, arr: T[]): T {
   return arr[Math.floor(rng() * arr.length)];
 }
@@ -170,10 +180,12 @@ export function getFallbackFortune(
   const score = generateScore(rng);
   const luckyNumber = 1 + Math.floor(rng() * 45);
 
-  // 로또 5세트 생성
+  // 로또 5세트 생성 — 각 세트는 행운 숫자를 반드시 포함
   const lottoNumbers: number[][] = [];
   for (let i = 0; i < 5; i++) {
-    lottoNumbers.push(pickUniqueNumbers(rng, 1, 45, 6));
+    // 행운 숫자 제외한 1~45에서 5개 추출 후 행운 숫자 추가
+    const others = pickUniqueNumbersExcluding(rng, 1, 45, 5, luckyNumber);
+    lottoNumbers.push([...others, luckyNumber].sort((a, b) => a - b));
   }
 
   return {
